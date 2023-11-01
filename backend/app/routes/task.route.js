@@ -13,5 +13,7 @@ router.delete("/", tasks.deleteAll);
 
 router.delete("/:id", tasks.delete);
 
+router.put("/:id", tasks.update);
+
 app.use('/api/tasks', router);
 }

@@ -101,3 +101,28 @@ exports.create = (req, res) => {
         })
     })
   }
+
+  exports.update=(req,res)=>{
+    const id=req.params.id;
+    Task.update(req.body,{
+      where:{id:id}
+    })
+    .then((num)=>{
+      if(num==1){
+        res.send({
+          message:`${num} Task updated successfully`
+        })
+      }
+        else{
+          res.send({
+            message:`Cannot update Task with id=${id}. Maybe Task was not found or req.body is empty!`
+          })
+        }
+      
+    })
+    .catch((error)=>{
+      res.status(500).send({
+        message:`Error updating Task with id=${id}`
+      })
+    })
+  }

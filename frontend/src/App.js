@@ -3,6 +3,7 @@ import axios from "axios";
 import "./App.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Button from "./components/Button";
 
 function App() {
   const [taskname, setTask] = useState("");
@@ -40,7 +41,6 @@ function App() {
     axios
       .post("http://localhost:8080/api/tasks", newTask)
       .then((response) => {
-        console.log(response.data);
         getTask();
         setTask("");
       })
@@ -54,7 +54,6 @@ function App() {
     axios
       .get("http://localhost:8080/api/tasks")
       .then((response) => {
-        console.log(response.data);
         setFetchedTask(response.data);
       })
       .catch((error) => {
@@ -62,7 +61,7 @@ function App() {
       });
   };
 
-  // API call for deleting data
+  // API call for deleting Task
   const deleteTask = (id) => {
     axios
       .delete(`http://localhost:8080/api/tasks/${id}`)
@@ -74,7 +73,7 @@ function App() {
       });
   };
 
-  // API call for deleting all data
+  // API call for deleting all Tasks
   const deleteAllTasks = () => {
     axios
       .delete(`http://localhost:8080/api/tasks`)
@@ -87,18 +86,18 @@ function App() {
       });
   };
 
-  // API call for updating data
-  const updateData = (item) => {
-    const updatedTask = prompt("Enter Updated Task Name:", item.task);
+  // API call for updating Task
+  const updateTask = (item) => {
+    const updatedTask = prompt("Enter Updated Task Name:", item.taskname);
     if (updatedTask === null) {
       return;
     }
     const newUpdatedTask = {
-      task: updatedTask,
+      taskname: updatedTask,
     };
 
     axios
-      .put(`http://localhost:4000/updateTask/${item.id}`, newUpdatedTask)
+      .put(`http://localhost:8080/api/tasks/${item.id}`, newUpdatedTask)
       .then((response) => {
         getTask();
       })
@@ -121,12 +120,11 @@ function App() {
             value={taskname}
             onChange={handleInputChange}
           />
-          <button
-            className="border-2 bg-green-500 border-green-600 rounded-md p-1 text-white"
-            onClick={storeTask}
-          >
-            Store Data
-          </button>
+          <Button
+            name={"Store Task"}
+            handleClick={storeTask}
+            styleProp={"bg-green-500 border-green-700"}
+          />
           <ToastContainer
             position="top-left"
             autoClose={5000}
@@ -151,35 +149,30 @@ function App() {
               key={index}
               className="flex gap-5 justify-center items-center m-3 "
             >
-              <span className="font-semibold text-lg">
-              {++index + ". "}
-              </span>
+              <span className="font-semibold text-lg">{++index + ". "}</span>
               <span className="mr-10 font-semibold text-lg text-gray-800">
                 {item.taskname}
               </span>
-              <button
-                className="border-2 bg-green-500 border-green-700 rounded-md p-1  w-16 text-white"
-                onClick={() => updateData(item)}
-              >
-                Edit
-              </button>
-              <button
-                className="border-2 bg-red-500 border-red-700 rounded-md p-1 w-16 text-white"
-                onClick={() => deleteTask(item.id)}
-              >
-                Delete
-              </button>
+              <Button
+                name={"Edit"}
+                handleClick={() => updateTask(item)}
+                styleProp={"bg-green-500 border-green-700 w-16"}
+              />
+              <Button
+                name={"Delete"}
+                handleClick={() => deleteTask(item.id)}
+                styleProp={"bg-red-500 border-red-700 w-16"}
+              />
             </li>
           ))}
         </ul>
         <div>
           {fetchedTask.length > 0 ? (
-            <button
-              className="border-2 mt-5 bg-red-500 border-red-700 rounded-md p-1  text-white"
-              onClick={deleteAllTasks}
-            >
-              Delete All Tasks
-            </button>
+            <Button
+              name={" Delete All Tasks"}
+              handleClick={deleteAllTasks}
+              styleProp={"bg-red-500 border-red-700 mt-5"}
+            />
           ) : (
             <h1 className="font-semibold mt-5 text-red-500">
               No Record Found!
